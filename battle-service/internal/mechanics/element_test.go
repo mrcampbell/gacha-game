@@ -20,8 +20,8 @@ func TestElementalAdvantageFactor(t *testing.T) {
 		{
 			name: "fire vs fire = normal",
 			args: args{
-				attacker: app.FIRE,
-				defender: app.FIRE,
+				attacker: app.ElementFire,
+				defender: app.ElementFire,
 			},
 			want:    1.0,
 			wantErr: false,
@@ -29,8 +29,8 @@ func TestElementalAdvantageFactor(t *testing.T) {
 		{
 			name: "fire vs grass = effective",
 			args: args{
-				attacker: app.FIRE,
-				defender: app.GRASS,
+				attacker: app.ElementFire,
+				defender: app.ElementGrass,
 			},
 			want:    2.0,
 			wantErr: false,

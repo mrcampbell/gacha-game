@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mrcampbell/gacha-game/battle-service/internal/app"
+	_ "github.com/mrcampbell/gacha-game/battle-service/internal/app"
 )
 
 type AdvantageFactor float32
@@ -18,60 +19,60 @@ var advantageAttackerDefenderFactorMap map[app.Element]map[app.Element]float32
 
 func init() {
 	advantageAttackerDefenderFactorMap = make(map[app.Element]map[app.Element]float32)
-	advantageAttackerDefenderFactorMap[app.FIRE] = make(map[app.Element]float32)
+	advantageAttackerDefenderFactorMap[app.ElementFire] = make(map[app.Element]float32)
 
-	advantageAttackerDefenderFactorMap[app.FIRE][app.FIRE] = NORMAL
-	advantageAttackerDefenderFactorMap[app.FIRE][app.WATER] = INEFFECTIVE
-	advantageAttackerDefenderFactorMap[app.FIRE][app.GRASS] = EFFECTIVE
+	advantageAttackerDefenderFactorMap[app.ElementFire][app.ElementFire] = NORMAL
+	advantageAttackerDefenderFactorMap[app.ElementFire][app.ElementWater] = INEFFECTIVE
+	advantageAttackerDefenderFactorMap[app.ElementFire][app.ElementGrass] = EFFECTIVE
 }
 
 func ElementalAdvantageFactor(attacker, defender app.Element) (float32, error) {
 
 	defenderFactorMap, ok := advantageAttackerDefenderFactorMap[attacker]
 
-	if ok == false {
+	if !ok {
 		return 0.0, fmt.Errorf("attacker matchup map not found")
 	}
 
 	factor, ok := defenderFactorMap[defender]
-	if ok == false {
-		return 0.0, fmt.Errorf("defender matchup map not found")
+	if !ok {
+		return 1.0, nil // this is the default response.
 	}
 
 	return factor, nil
 
 	// switch attacker {
-	// case app.FIRE:
+	// case app.ElementFire:
 	// 	{
 	// 		switch defender {
-	// 		case app.FIRE:
+	// 		case app.ElementFire:
 	// 			return NORMAL, nil
-	// 		case app.WATER:
+	// 		case app.ElementWater:
 	// 			return INEFFECTIVE, nil
-	// 		case app.GRASS:
+	// 		case app.ElementGrass:
 	// 			return EFFECTIVE, nil
 	// 		}
 	// 	}
 
-	// case app.WATER:
+	// case app.ElementWater:
 	// 	{
 	// 		switch defender {
-	// 		case app.FIRE:
+	// 		case app.ElementFire:
 	// 			return NORMAL, nil
-	// 		case app.WATER:
+	// 		case app.ElementWater:
 	// 			return INEFFECTIVE, nil
-	// 		case app.GRASS:
+	// 		case app.ElementGrass:
 	// 			return EFFECTIVE, nil
 	// 		}
 	// 	}
-	// case app.GRASS:
+	// case app.ElementGrass:
 	// 	{
 	// 		switch defender {
-	// 		case app.FIRE:
+	// 		case app.ElementFire:
 	// 			return NORMAL, nil
-	// 		case app.WATER:
+	// 		case app.ElementWater:
 	// 			return INEFFECTIVE, nil
-	// 		case app.GRASS:
+	// 		case app.ElementGrass:
 	// 			return EFFECTIVE, nil
 	// 		}
 	// 	}

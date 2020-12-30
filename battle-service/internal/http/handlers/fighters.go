@@ -10,9 +10,9 @@ import (
 
 // todo: dev
 var units = map[int]app.FighterUnit{
-	1: app.FighterUnit{Element: app.FIRE, Name: "Flintly", Type: app.ATTACKER},
-	2: app.FighterUnit{Element: app.WATER, Name: "Splishy", Type: app.ATTACKER},
-	3: app.FighterUnit{Element: app.GRASS, Name: "Sprouty", Type: app.ATTACKER},
+	1: app.FighterUnit{Element: app.ElementFire, Name: "Flintly", Type: app.FighterTypeAttacker},
+	2: app.FighterUnit{Element: app.ElementWater, Name: "Splishy", Type: app.FighterTypeAttacker},
+	3: app.FighterUnit{Element: app.ElementGrass, Name: "Sprouty", Type: app.FighterTypeAttacker},
 }
 
 type myTeamRequest struct {

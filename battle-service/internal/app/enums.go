@@ -3,15 +3,36 @@ package app
 type Element string
 
 const (
-	FIRE  Element = "fire"
-	WATER Element = "water"
-	GRASS Element = "grass"
+	ElementFire  Element = "fire"
+	ElementWater Element = "water"
+	ElementGrass Element = "grass"
 )
 
 type FighterType string
 
 const (
-	TANK     FighterType = "tank"
-	ATTACKER FighterType = "attacker"
-	SUPPORT  FighterType = "support"
+	FighterTypeTank     FighterType = "tank"
+	FighterTypeAttacker FighterType = "attacker"
+	FighterTypeSupport  FighterType = "support"
+)
+
+type MoveTargetType string
+
+const (
+	MoveTargetTypeAllEnemies     MoveTargetType = "all_enemies"
+	MoveTargetTypeAllAllies      MoveTargetType = "all_allies"
+	MoveTargetTypeAllSingleEnemy MoveTargetType = "single_enemy"
+	MoveTargetTypeAllSingleAlly  MoveTargetType = "single_ally"
+	MoveTargetTypeAllSelf        MoveTargetType = "self"
+)
+
+type MoveType string
+
+const (
+	MoveTypeHeal            MoveType = "heal"
+	MoveTypeDamage          MoveType = "damage"
+	MoveTypeBuff            MoveType = "buff"
+	MoveTypeDebuff          MoveType = "debuff"
+	MoveTypeDamageAndDebuff MoveType = "damage+debuff"
+	MoveTypeHealAndBuff     MoveType = "heal+buff"
 )
