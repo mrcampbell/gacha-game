@@ -1,7 +1,7 @@
 syntax = "proto3";
 package greeter;
 
-option go_package="../../dist/go/greeter";
+option go_package="../../battle-service/proto/greeter";
 
 message HelloRequest {
     string name = 1;

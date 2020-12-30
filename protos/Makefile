@@ -3,5 +3,12 @@
 # ensure rust is installed, and cargo is in your path
 # cargo install protobuf-codegen
 
-gen:
-	protoc --rust_out=./dist/rust --go_out=./dist/go  ./src/*
+# gen:
+	# protoc --rust_out=../fighter-service/src --go_out=./dist/go  ./src/*
+
+gen-rust:
+	cargo build
+
+gen-go:
+	protoc --go_out=plugins=grpc:./../battle-service/proto/ *.proto
+ 
