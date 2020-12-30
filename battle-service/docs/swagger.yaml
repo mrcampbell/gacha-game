@@ -1,0 +1,52 @@
+basePath: /api/v1
+definitions:
+  handlers.myTeamRequest:
+    properties:
+      user_id:
+        type: string
+    type: object
+  handlers.pong:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This manages the battles in the Gacha Game
+  title: 'Gacha Game: Battle Service'
+  version: "1.0"
+paths:
+  /my/team:
+    post:
+      consumes:
+      - application/json
+      description: Is User Specific
+      parameters:
+      - description: the user id who owns the team
+        in: body
+        name: req
+        schema:
+          $ref: '#/definitions/handlers.myTeamRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.pong'
+      summary: List all members of my team
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: responds with `pong`
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.pong'
+      summary: Ensure the API is working/listening
+swagger: "2.0"
