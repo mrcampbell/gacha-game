@@ -8,6 +8,8 @@ edition = "2018"
 tonic = "0.3"
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros"] }
+diesel = { version = "1.4.4", features = ["postgres"] }
+dotenv = "0.15.0"
 
 [build-dependencies]
 tonic-build = "0.3"

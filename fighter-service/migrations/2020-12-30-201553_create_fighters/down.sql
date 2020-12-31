@@ -1,0 +1,5 @@
+-- This file should undo anything in `up.sql`
+DROP TABLE UNIT_MOVES;
+DROP TABLE FIGHTERS;
+DROP TABLE UNITS;
+DROP TABLE MOVES;
