@@ -4,7 +4,6 @@ fn main() {
 
     tonic_build::configure()
         .build_client(true)
-        .out_dir(&"./src")
         .compile(iface_files, dirs)
         .unwrap_or_else(|e| panic!("protobuf compilation failed: {}", e));
 
