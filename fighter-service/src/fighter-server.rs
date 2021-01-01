@@ -1,7 +1,13 @@
 use tonic::{transport::Server, Request, Response, Status};
+extern crate fighter_service;
+extern crate diesel;
+use self::fighter_service::*;
+use self::models::*;
+use self::diesel::prelude::*;
 
 use fighter::fighter_service_server::{FighterService, FighterServiceServer};
-use fighter::{Element, Unit, UnitByIdRequest, UnitByIdResponse, UnitType};
+use fighter::{Unit as pbUnit, UnitByIdRequest, UnitByIdResponse};
+
 
 // Import the generated proto-rust file into a module
 pub mod fighter {
@@ -21,15 +27,26 @@ impl FighterService for MyFighterServiceServer {
     &self,
     request: Request<UnitByIdRequest>,
   ) -> Result<Response<UnitByIdResponse>, Status> {
-    println!("Received request from: {:?}", request);
+    use fighter_service::schema::units::dsl::*;
 
-    let unit = Unit {
-      id: format!("Hello {}!", request.into_inner().id).into(),
+    let req = request.into_inner();
+    println!("Received request from: {:?}", req);
+
+
+    let connection = establish_connection();
+    let result = units
+        .filter(id.eq(req.id))
+        .first::<Unit>(&connection)
+        .expect("Error loading units");
+
+    let unit = pbUnit {
+      id: result.id,
       // element: Element::Fire,
-      element: 1,
-      r#type: 2,
+      element: result.element,
+      r#type: result.type_,
       // r#type: UnitType::Tank,
-      name: "Falcano".to_string(),
+      // name: "Falcano".to_string(),
+      name: result.name
     };
 
     let response = fighter::UnitByIdResponse { unit: Some(unit) };

@@ -19,5 +19,9 @@ name = "helloworld-server"
 path = "src/hello-server.rs"
 
 [[bin]] # Bin to run the HelloWorld gRPC server
+name = "fighter-server-seed"
+path = "src/bin/seed_units.rs"
+
+[[bin]] # Bin to run the HelloWorld gRPC server
 name = "fighter-server"
 path = "src/fighter-server.rs"

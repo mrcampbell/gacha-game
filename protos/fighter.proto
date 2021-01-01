@@ -17,6 +17,7 @@ enum Element {
   ELEMENT_FIRE = 1;
   ELEMENT_WATER = 2;
   ELEMENT_GRASS = 3;
+  ELEMENT_NORMAL = 4;
 }
 
 message Unit {
