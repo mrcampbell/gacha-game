@@ -3,6 +3,7 @@ package fighter;
 
 option go_package="../../battle-service/proto/fighter";
 
+
 enum UnitType {
   UNIT_TYPE_UNKNOWN = 0;
   UNIT_TYPE_TANK = 1;

@@ -1,6 +1,6 @@
 fn main() {
-    let iface_files = &["../protos/greeter.proto"];
-    let dirs = &["../"];
+    let iface_files = &["greeter.proto","fighter.proto"];
+    let dirs = &["../protos"];
 
     tonic_build::configure()
         .build_client(true)
@@ -12,3 +12,8 @@ fn main() {
         println!("cargo:rerun-if-changed={}", file);
     }
 }
+
+// fn main() -> Result<(), Box<dyn std::error::Error>> {
+//     tonic_build::compile_protos("../protos/greeter.proto")?;
+//     Ok(())
+// }

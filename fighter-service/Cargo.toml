@@ -17,3 +17,7 @@ tonic-build = "0.3"
 [[bin]] # Bin to run the HelloWorld gRPC server
 name = "helloworld-server"
 path = "src/hello-server.rs"
+
+[[bin]] # Bin to run the HelloWorld gRPC server
+name = "fighter-server"
+path = "src/fighter-server.rs"
