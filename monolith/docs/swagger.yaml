@@ -1,0 +1,28 @@
+basePath: /api/v1
+definitions:
+  handlers.pong:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Proof of Concept, inmemory Gacha Game
+  title: 'Gacha Game: Monolith'
+  version: "1.0"
+paths:
+  /ping:
+    get:
+      consumes:
+      - application/json
+      description: responds with `pong`
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.pong'
+      summary: Ensure the API is working/listening
+swagger: "2.0"
