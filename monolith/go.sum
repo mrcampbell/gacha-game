@@ -203,6 +203,7 @@ github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742/go.mod h1:bx2lN
 github.com/modern-go/reflect2 v1.0.1 h1:9f412s+6RmYXLWZSEzVVgPGK7C2PphHj5RJrvfx9AWI=
 github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3RllmbCylyMrvgv0=
 github.com/mrcampbell/gacha-game v0.0.0-20210101221811-22758454c52c h1:wa9PCrDpgAq6SiRV2WUWk9VUQVEiMiwnIm0wIC/Pwfw=
+github.com/mrcampbell/gacha-game v0.0.0-20210105232928-cb37d3ba73c2 h1:nCc510Ozyx0//2+UHPQ7ZUSp5Ev8DWF/mkxJ7B9DKzM=
 github.com/mrcampbell/gacha-game/monolith v0.0.0-20210101221811-22758454c52c h1:uV7rvdSmFbnNCZz7d1ZbDK6FMEkRdxRNpVQ8OOytHRo=
 github.com/mrcampbell/gacha-game/monolith v0.0.0-20210101221811-22758454c52c/go.mod h1:OYC11B/tRJU60HOND3G5uR2bnsfO2vQQm3cGkmk4Xms=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=

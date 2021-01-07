@@ -28,9 +28,78 @@
                     }
                 }
             }
+        },
+        "/static/units": {
+            "get": {
+                "description": "responds with all available single unit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets Unit by ID (Public/Static).",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.Unit"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/static/units/{id}": {
+            "get": {
+                "description": "responds with single unit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets Unit by ID (Public/Static).",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get unit by id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Unit"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "app.Unit": {
+            "type": "object",
+            "properties": {
+                "element": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "unit_type": {
+                    "description": "because type is a reserved word",
+                    "type": "integer"
+                }
+            }
+        },
         "handlers.pong": {
             "type": "object",
             "properties": {
