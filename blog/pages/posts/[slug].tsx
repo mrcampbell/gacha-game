@@ -4,26 +4,32 @@ import matter from "gray-matter";
 import ReactMarkdown from "react-markdown/with-html";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import theme from "react-syntax-highlighter/dist/cjs/styles/prism/atom-dark";
+import { Container, Box } from "@chakra-ui/react";
+
+// @ts-ignore
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
 
 import Layout from "../../components/Layout";
 
 const CodeBlock = ({ language, value }: any) => {
   return (
-    <SyntaxHighlighter language={language} style={theme}>
-      {value}
-    </SyntaxHighlighter>
+    <Box maxW={10}>
+      <SyntaxHighlighter language={language} style={theme}>
+        {value}
+      </SyntaxHighlighter>
+    </Box>
   );
 };
 
 export default function Post({ content, frontmatter }: any) {
   return (
     <Layout>
-      <article>
-        <ReactMarkdown
-          escapeHtml={false}
-          source={content}
-          renderers={{ code: CodeBlock }}
-        />
+      <article style={{padding: 40}}>
+          <ReactMarkdown
+            escapeHtml={false}
+            source={content}
+            renderers={{ code: CodeBlock, ...ChakraUIRenderer() }}
+          />
       </article>
     </Layout>
   );
@@ -62,7 +68,7 @@ export async function getStaticProps({ params: { slug } }: any) {
 
   return {
     props: {
-      content: `# ${data.title}\n${content}`,
+      content,
       frontmatter,
     },
   };

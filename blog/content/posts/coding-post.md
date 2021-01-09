@@ -5,7 +5,6 @@ updatedAt: 2020-04-18
 ---
 
 ```jsx
-
 import React from "react";
 
 const CoolComponent = () => <div>I'm a cool component!!</div>;

@@ -1,36 +1,39 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Heading, Box } from "@chakra-ui/react";
 
 export default function Layout({ children }: any) {
   const { pathname } = useRouter();
   const isRoot = pathname === "/";
 
   const header = isRoot ? (
-    <h1 className="mb-8">
+    <Box marginBottom={8}>
       <Link href="/">
-        <a className="text-6xl font-black text-black no-underline">
-          Next.Js Starter Blog
-        </a>
+        <Heading>
+          MC's Blog
+        </Heading>
       </Link>
-    </h1>
+    </Box>
   ) : (
-    <h1 className="mb-2">
+    <Box marginBottom={2}>
       <Link href="/">
-        <a className="text-2xl font-black text-black no-underline">
-          Next.Js Starter Blog
-        </a>
+        <Heading>
+          MC's Blog
+        </Heading>
       </Link>
-    </h1>
+    </Box>
   );
 
   return (
-    <div className="max-w-screen-sm px-4 py-8 mx-auto">
+    <Box w="100%">
       <header>{header}</header>
-      <main>{children}</main>
+      <Box w="80%">{children}</Box>
       <footer>
+        <Box marginTop={12}>
         © {new Date().getFullYear()}, Built with{" "}
         <a href="https://nextjs.org/">Next.js</a> &#128293;
+        </Box>
       </footer>
-    </div>
+    </Box>
   );
 }

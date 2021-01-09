@@ -1,3 +1,4 @@
+import { Container, Heading, Stack, Text } from "@chakra-ui/react";
 import fs from "fs";
 import matter from "gray-matter";
 import Link from "next/link";
@@ -6,23 +7,29 @@ import Layout from "../components/Layout";
 export default function Home({ posts }: any) {
   return (
     <Layout>
-      {posts.map(({ frontmatter: { title, description, updatedAt }, slug }: any) => (
-        <article key={slug}>
-          <header>
-            <h3 className="mb-2">
-              <Link href={"/posts/[slug]"} as={`/posts/${slug}`}>
-                <a className="text-3xl font-semibold text-orange-600 no-underline">
-                  {title}
-                </a>
-              </Link>
-            </h3>
-            <span className="mb-4 text-xs">{updatedAt}</span>
-          </header>
-          <section>
-            <p className="mb-8">{description}</p>
-          </section>
-        </article>
-      ))}
+      <Container centerContent>
+        <Stack spacing={8}>
+          {posts.map(
+            ({ frontmatter: { title, description, updatedAt }, slug }: any) => (
+              <article key={slug}>
+                <header>
+                  <Heading style={{ cursor: "pointer" }}>
+                    <Link href={"/posts/[slug]"} as={`/posts/${slug}`}>
+                      <Text as="u">{title}</Text>
+                    </Link>
+                  </Heading>
+                  <Text as="em" size="sm">
+                    {updatedAt}
+                  </Text>
+                </header>
+                <section>
+                  <Text>{description}</Text>
+                </section>
+              </article>
+            )
+          )}
+        </Stack>
+      </Container>
     </Layout>
   );
 }
@@ -45,7 +52,6 @@ export async function getStaticProps() {
       updatedAt: formattedDate,
     };
 
-
     return {
       slug: filename.replace(".md", ""),
       frontmatter,
@@ -58,7 +64,7 @@ export async function getStaticProps() {
     } else {
       return -1;
     }
-  })
+  });
 
   return {
     props: {
