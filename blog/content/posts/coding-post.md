@@ -1,7 +1,7 @@
 ---
 title: Coding Post
 description: Coding is such a blissful activity.
-updatedAt: 2020-04-16
+updatedAt: 2020-04-18
 ---
 
 ```jsx

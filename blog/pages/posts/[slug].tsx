@@ -24,7 +24,6 @@ export default function Post({ content, frontmatter }: any) {
   );
 }
 
-
 export async function getStaticPaths() {
   const files = fs.readdirSync("content/posts");
 
