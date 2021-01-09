@@ -46,7 +46,9 @@ We'll try to solve some of the less savory aspects of gacha games, like using al
 
 Technically, we'll add monitoring, tracing, logging, and examine architectural design, discussing the pros and cons of a few different approaches.
 
-We'll be exploring Go, Rust, Elixir, C#, and Node.js (and possibly more), microservices, SQL, NoSQL, React, Kubernetes, Docker, Prometheus, Grafana, gRPC, GraphQL, REST APIs, caching with Redis, and deploying our code with Terraform, and much, much more!  
+We'll be exploring Go, Rust, Elixir, C#, and Node.js (and possibly more), microservices, SQL, NoSQL, React, Kubernetes, Docker, Prometheus, Grafana, gRPC, GraphQL, REST APIs, caching with Redis, and deploying our code with Terraform, and much, much more!\
+
+Some of the tutorials will be "Main Quest", where it's using the standard or more basic approach to a problem, but there will be "Side Quests" along the way that use an alternate technology that can be a drop-in replacement for the "Main Quest" solution.  An example of this is, rather than using Websockets, we can use GraphQL Subscriptions, gRPC/WebRTC Streams, Long-Polling, etc.  We'll store these in a Sidequest `mod`/`app`/`package`/`directory`, so if you hop in during the middle of a "starter repo", you may see those on the side.  None of them need to be done to complete the game, so pick and choose as you like.
 
 But this is a "choose your own adventure".  If some of those don't interest you, feel free to drop in at any stage, pick up the "starter repo" for your chapter, and go from there!
 

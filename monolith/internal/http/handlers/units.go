@@ -19,7 +19,7 @@ func InitializeFighterHandlers(fs app.FighterService) {
 	FighterHandler = fighterHandler{fighterService: fs}
 }
 
-// UnitByID godoc
+// Show Unit godoc
 // @Summary Gets Unit by ID (Public/Static).
 // @Description responds with single unit
 // @Accept  json
@@ -40,14 +40,14 @@ func (h fighterHandler) UnitByID(c *gin.Context) {
 
 	unit, err := h.fighterService.UnitByID(c.Request.Context(), id)
 	if err != nil {
-		_ = c.Error(fmt.Errorf("no unit with id: %s", id))
+		_ = c.AbortWithError(http.StatusNotFound, fmt.Errorf("no unit with id: %s", id))
 		return
 	}
 
 	c.JSON(http.StatusOK, unit)
 }
 
-// AllUnits godoc
+// List Units godoc
 // @Summary Gets Unit by ID (Public/Static).
 // @Description responds with all available single unit
 // @Accept  json

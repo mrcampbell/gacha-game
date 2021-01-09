@@ -8,9 +8,7 @@ import (
 )
 
 func main() {
-
 	fighterService := inmemory.NewFighterService()
-
 	handlers.InitializeFighterHandlers(fighterService)
 
 	r := gin.Default()
