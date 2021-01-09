@@ -3,11 +3,16 @@ import path from "path";
 import matter from "gray-matter";
 import ReactMarkdown from "react-markdown/with-html";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import theme from "react-syntax-highlighter/dist/cjs/styles/prism/atom-dark";
 
 import Layout from "../../components/Layout";
 
 const CodeBlock = ({ language, value }: any) => {
-  return <SyntaxHighlighter language={language}>{value}</SyntaxHighlighter>;
+  return (
+    <SyntaxHighlighter language={language} style={theme}>
+      {value}
+    </SyntaxHighlighter>
+  );
 };
 
 export default function Post({ content, frontmatter }: any) {
@@ -40,7 +45,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }: any) {
-   const markdownWithMetadata = fs
+  const markdownWithMetadata = fs
     .readFileSync(path.join("content/posts", slug + ".md"))
     .toString();
 
