@@ -9,14 +9,14 @@ import (
 	"github.com/mrcampbell/gacha-game/monolith/internal/app"
 )
 
-type fighterHandler struct {
-	fighterService app.FighterService
+type unitHandler struct {
+	unitService app.UnitService
 }
 
-var FighterHandler fighterHandler
+var UnitHandler unitHandler
 
-func InitializeFighterHandlers(fs app.FighterService) {
-	FighterHandler = fighterHandler{fighterService: fs}
+func InitializeUnitHandlers(fs app.UnitService) {
+	UnitHandler = unitHandler{unitService: fs}
 }
 
 // Show Unit godoc
@@ -31,14 +31,14 @@ func InitializeFighterHandlers(fs app.FighterService) {
 // // @Failure 500 {object} httputil.HTTPError
 // // @Failure default {object} httputil.DefaultError
 // @Router /static/units/{id} [get]
-func (h fighterHandler) UnitByID(c *gin.Context) {
+func (h unitHandler) UnitByID(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		_ = c.Error(errors.New("missing required parameter: id"))
 		return
 	}
 
-	unit, err := h.fighterService.UnitByID(c.Request.Context(), id)
+	unit, err := h.unitService.UnitByID(c.Request.Context(), id)
 	if err != nil {
 		_ = c.AbortWithError(http.StatusNotFound, fmt.Errorf("no unit with id: %s", id))
 		return
@@ -58,8 +58,8 @@ func (h fighterHandler) UnitByID(c *gin.Context) {
 // // @Failure 500 {object} httputil.HTTPError
 // // @Failure default {object} httputil.DefaultError
 // @Router /static/units [get]
-func (h fighterHandler) AllUnits(c *gin.Context) {
-	units, err := h.fighterService.ListAllUnits(c.Request.Context())
+func (h unitHandler) AllUnits(c *gin.Context) {
+	units, err := h.unitService.ListAllUnits(c.Request.Context())
 	if err != nil {
 		_ = c.Error(fmt.Errorf("error listing units"))
 		return

@@ -2,7 +2,7 @@ package app
 
 import "context"
 
-type FighterService interface {
+type UnitService interface {
 	UnitByID(ctx context.Context, id string) (Unit, error)
 	ListAllUnits(ctx context.Context) ([]Unit, error)
 }
@@ -12,5 +12,12 @@ type MoveService interface {
 }
 
 type UnitMoveService interface {
-	ListUnitMovesForUnit(ctx context.Context, unit_id string) ([]Move, error)
+	ListUnitMovesForUnit(ctx context.Context, unitID string) ([]Move, error)
+	ListUnitMovesAtLevelForUnit(ctx context.Context, unitID string, level int32) ([]Move, error)
+}
+
+type FighterService interface {
+	CreateFighter(ctx context.Context, userID, unitID string, level int32) (Fighter, error)
+	FighterByID(ctx context.Context, userID, fighterID string) (Fighter, error)
+	FightersByUserID(ctx context.Context, userID string) ([]Fighter, error)
 }

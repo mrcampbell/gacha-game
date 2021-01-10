@@ -1,5 +1,16 @@
 basePath: /api/v1
 definitions:
+  app.StatGroup:
+    properties:
+      attack:
+        type: integer
+      defense:
+        type: integer
+      health:
+        type: integer
+      speed:
+        type: integer
+    type: object
   app.Unit:
     properties:
       element:
@@ -8,8 +19,10 @@ definitions:
         type: string
       name:
         type: string
+      stats:
+        $ref: '#/definitions/app.StatGroup'
       unit_type:
-        description: because type is a reserved word
+        description: because `type` is a reserved word
         type: integer
     type: object
   handlers.pong:

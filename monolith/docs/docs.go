@@ -97,6 +97,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "app.StatGroup": {
+            "type": "object",
+            "properties": {
+                "attack": {
+                    "type": "integer"
+                },
+                "defense": {
+                    "type": "integer"
+                },
+                "health": {
+                    "type": "integer"
+                },
+                "speed": {
+                    "type": "integer"
+                }
+            }
+        },
         "app.Unit": {
             "type": "object",
             "properties": {
@@ -109,8 +126,11 @@ var doc = `{
                 "name": {
                     "type": "string"
                 },
+                "stats": {
+                    "$ref": "#/definitions/app.StatGroup"
+                },
                 "unit_type": {
-                    "description": "because type is a reserved word",
+                    "description": "because ` + "`" + `type` + "`" + ` is a reserved word",
                     "type": "integer"
                 }
             }

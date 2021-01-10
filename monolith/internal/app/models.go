@@ -53,11 +53,12 @@ type MoveMeta interface {
 }
 
 type Move struct {
-	ID          string     `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description"`
-	Element     Element    `json:"element"`
-	Metas       []MoveMeta `json:"metas"` // this is tricky, more a demo than anything
+	ID           string     `json:"id"`
+	Name         string     `json:"name"`
+	Description  string     `json:"description"`
+	Element      Element    `json:"element"`
+	Metas        []MoveMeta `json:"metas"` // this is tricky, more a demo than anything
+	RestDuration int32      `json:"rest_duration"`
 }
 
 type MoveMetaHeal struct {
@@ -130,10 +131,10 @@ func NewMoveMetaLockOnMe(duration int32) MoveMetaLockOnMe {
 	}
 }
 
-type MoveLearns struct {
-	UnitID         int `json:"unit_id"`
-	MoveID         int `json:"move_id"`
-	LevelLearnedAt int `json:"level_learned_at"`
+type UnitMove struct {
+	UnitID         string `json:"unit_id"`
+	MoveID         string `json:"move_id"`
+	LevelLearnedAt int32  `json:"level_learned_at"`
 }
 
 type StatGroup struct {
@@ -156,6 +157,23 @@ type Fighter struct {
 	UserID       string    `json:"user_id"`
 	UnitID       string    `json:"unit_id"` // for hydration
 	BaseUnit     Unit      `json:"base_unit"`
-	Level        string    `json:"string"`
+	Level        int32     `json:"string"`
 	CurrentStats StatGroup `json:"stats"` // calculated at level up
+	Moves        []Move    `json:"moves"`
+}
+
+func (f Fighter) CalculateCurrentStats() StatGroup {
+
+	calcStat := func(level, baseStat int32) int32 {
+		return level * baseStat / 4 // this is arbitrary
+	}
+
+	sg := StatGroup{
+		Health:  calcStat(f.Level, f.BaseUnit.Stats.Health) + 20,
+		Attack:  calcStat(f.Level, f.BaseUnit.Stats.Attack),
+		Defense: calcStat(f.Level, f.BaseUnit.Stats.Defense),
+		Speed:   calcStat(f.Level, f.BaseUnit.Stats.Speed),
+	}
+
+	return sg
 }

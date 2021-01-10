@@ -2,98 +2,65 @@ package inmemory
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
-	"github.com/mrcampbell/gacha-game/monolith/internal/app"
+	"github.com/mrcampbell/gacha-game/monolith/internal/util"
 
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
+	"github.com/mrcampbell/gacha-game/monolith/internal/app"
 )
 
 // ensure the interface is implemented correctly
 var _ app.FighterService = &FighterService{}
 
 type FighterService struct {
-	units map[string]app.Unit
+	fighters        map[string]app.Fighter
+	unitService     app.UnitService
+	unitMoveService app.UnitMoveService
 }
 
-// Stats By Element
-
-//				Hp	Atk	Def	Speed	Average
-// Fire		1		3		1		3			2
-// Water	2		2		2		2			2
-// Grass	3		1		3		1			2
-// Norm		x		1		1		x			1
-
-// Stats By Class
-
-//					Hp	Atk	Def	Speed	Average
-// Tank			5		1		5		1			3
-// Healer		2		2		2		4			2
-// Support	3		1		2		2			2
-// Attacker	2		5		2		4			1
-
-var FireStatMod = app.StatGroup{
-	Health:  1,
-	Attack:  3,
-	Defense: 1,
-	Speed:   3,
+func NewFighterService(unitService app.UnitService, unitMoveService app.UnitMoveService) FighterService {
+	fs := FighterService{unitService: unitService, unitMoveService: unitMoveService}
+	fs.initialize()
+	return fs
 }
 
-var WaterStatMod = app.StatGroup{
-	Health:  2,
-	Attack:  2,
-	Defense: 2,
-	Speed:   2,
-}
-
-var GrassStatMod = app.StatGroup{
-	Health:  3,
-	Attack:  1,
-	Defense: 3,
-	Speed:   1,
-}
-
-func NewFighterService() FighterService {
-	units := make(map[string]app.Unit)
-
-	units["1"] = app.Unit{Element: app.ElementFire, Name: "Fire Tank", UnitType: app.UnitTypeTank}
-	units["2"] = app.Unit{Element: app.ElementFire, Name: "Fire Healer", UnitType: app.UnitTypeHealer}
-	units["3"] = app.Unit{Element: app.ElementFire, Name: "Fire Support", UnitType: app.UnitTypeSupport}
-	units["4"] = app.Unit{Element: app.ElementFire, Name: "Fire Attacker", UnitType: app.UnitTypeAttacker}
-	units["5"] = app.Unit{Element: app.ElementWater, Name: "Water Tank", UnitType: app.UnitTypeTank}
-	units["6"] = app.Unit{Element: app.ElementWater, Name: "Water Healer", UnitType: app.UnitTypeHealer}
-	units["7"] = app.Unit{Element: app.ElementWater, Name: "Water Support", UnitType: app.UnitTypeSupport}
-	units["8"] = app.Unit{Element: app.ElementWater, Name: "Water Attacker", UnitType: app.UnitTypeAttacker}
-	units["9"] = app.Unit{Element: app.ElementGrass, Name: "Water Tank", UnitType: app.UnitTypeTank}
-	units["10"] = app.Unit{Element: app.ElementGrass, Name: "Grass Healer", UnitType: app.UnitTypeHealer}
-	units["11"] = app.Unit{Element: app.ElementGrass, Name: "Grass Support", UnitType: app.UnitTypeSupport}
-	units["12"] = app.Unit{Element: app.ElementGrass, Name: "Grass Attacker", UnitType: app.UnitTypeAttacker}
-	units["13"] = app.Unit{Element: app.ElementNormal, Name: "Normal Tank", UnitType: app.UnitTypeTank}
-	units["14"] = app.Unit{Element: app.ElementNormal, Name: "Normal Healer", UnitType: app.UnitTypeHealer}
-	units["15"] = app.Unit{Element: app.ElementNormal, Name: "Normal Support", UnitType: app.UnitTypeSupport}
-	units["16"] = app.Unit{Element: app.ElementNormal, Name: "Normal Attacker", UnitType: app.UnitTypeAttacker}
-
-	return FighterService{units: units}
-}
-
-func (f FighterService) UnitByID(ctx context.Context, id string) (app.Unit, error) {
-	unit, ok := f.units[id]
-	if !ok {
-		return app.Unit{}, status.Error(codes.NotFound, fmt.Sprintf("no fighter with id [%s]", id))
+func (fs FighterService) CreateFighter(ctx context.Context, userID, unitID string, level int32) (app.Fighter, error) {
+	unit, err := fs.unitService.UnitByID(ctx, unitID)
+	if err != nil {
+		return app.Fighter{}, fmt.Errorf("failed to get unit by id | %s", err.Error())
 	}
 
-	// we purposefully didn't set this in the map above so we could shift around the order without having to worry
-	// about inconsistencies between the unit's hardcoded ID and the ID in reference to where it is in the map
-	unit.ID = id
+	moves, err := fs.unitMoveService.ListUnitMovesAtLevelForUnit(ctx, unitID, level)
+	if err != nil {
+		return app.Fighter{}, fmt.Errorf("failed to get moves for unit by id | %s", err.Error())
+	}
 
-	return unit, nil
+	fighter := app.Fighter{Level: level, UserID: userID, BaseUnit: unit, UnitID: unitID}
+
+	fighter.CurrentStats = fighter.CalculateCurrentStats()
+
+	fighter.ID = util.GenerateID()
+	fs.fighters[fighter.ID] = fighter
+
+	// we assign moves afterwards because they are their own unique, independent object.  We're only concerned with storing
+	// details specific to the fighter, and since our fighter gains the same exact moves as they level up, it will always
+	// compute to the same every time.
+	// Now, if the fighter could only learn a certain number of moves, and the moves varied between fighters of the same unit
+	// this wouldn't work and we would need to create a new service or store it here to ensure that unique mapping persisted.
+	fighter.Moves = moves
+
+	return fighter, nil
 }
 
-func (f FighterService) ListAllUnits(ctx context.Context) ([]app.Unit, error) {
-	units := []app.Unit{}
-	for _, unit := range f.units {
-		units = append(units, unit)
-	}
-	return units, nil
+func (fs FighterService) FighterByID(ctx context.Context, userID, fighterID string) (app.Fighter, error) {
+	return app.Fighter{}, errors.New("unimplemented")
+}
+
+func (fs FighterService) FightersByUserID(ctx context.Context, userID string) ([]app.Fighter, error) {
+	return nil, errors.New("unimplemented")
+}
+
+func (fs *FighterService) initialize() {
+	fs.fighters = make(map[string]app.Fighter)
 }
