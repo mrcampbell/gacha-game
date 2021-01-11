@@ -24,7 +24,7 @@ message Unit {
   string id = 1;
   string name = 2;
   Element element = 3;
-  UnitType type = 4;
+  UnitType unit_type = 4;
 }
 
 message UnitByIDRequest {
