@@ -1,7 +1,7 @@
 syntax = "proto3";
 package fighter;
 
-option go_package="../../battle-service/proto/fighter";
+option go_package="internal/protos/fighter";
 
 
 enum UnitType {
