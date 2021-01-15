@@ -5,8 +5,7 @@ use self::fighter_service::*;
 use self::models::*;
 use self::diesel::prelude::*;
 
-use fighter::fighter_service_server::{FighterService, FighterServiceServer};
-use fighter::{Unit as pbUnit, UnitByIdRequest, UnitByIdResponse};
+use fighter::{Unit as pbUnit, UnitByIdRequest, UnitByIdResponse, fighter_service_server::{FighterService, FighterServiceServer}};
 
 
 // Import the generated proto-rust file into a module
@@ -29,23 +28,19 @@ impl FighterService for MyFighterServiceServer {
   ) -> Result<Response<UnitByIdResponse>, Status> {
     use fighter_service::schema::units::dsl::*;
 
-    let req = request.into_inner();
+    let req = &request.into_inner();
     println!("Received request from: {:?}", req);
-
 
     let connection = establish_connection();
     let result = units
-        .filter(id.eq(req.id))
+        .filter(id.eq(&req.id))
         .first::<Unit>(&connection)
         .expect("Error loading units");
 
     let unit = pbUnit {
       id: result.id,
-      // element: Element::Fire,
       element: result.element,
-      r#type: result.type_,
-      // r#type: UnitType::Tank,
-      // name: "Falcano".to_string(),
+      unit_type: result.unit_type,
       name: result.name
     };
 

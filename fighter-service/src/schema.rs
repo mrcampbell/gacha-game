@@ -32,8 +32,7 @@ table! {
         id -> Text,
         name -> Text,
         element -> Int4,
-        #[sql_name = "type"]
-        type_ -> Int4,
+        unit_type -> Int4,
     }
 }
 
@@ -41,4 +40,9 @@ joinable!(fighters -> units (unit_id));
 joinable!(unit_moves -> moves (move_id));
 joinable!(unit_moves -> units (unit_id));
 
-allow_tables_to_appear_in_same_query!(fighters, moves, unit_moves, units,);
+allow_tables_to_appear_in_same_query!(
+    fighters,
+    moves,
+    unit_moves,
+    units,
+);

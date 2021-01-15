@@ -5,7 +5,7 @@ CREATE TABLE UNITS (
     id text PRIMARY KEY DEFAULT uuid_generate_v4(),
     "name" text NOT NULL,
     element int NOT NULL,
-    "type" int NOT NULL
+    unit_type int NOT NULL
 );
 
 CREATE TABLE FIGHTERS (
