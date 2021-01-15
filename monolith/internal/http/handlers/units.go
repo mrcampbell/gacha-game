@@ -15,8 +15,8 @@ type unitHandler struct {
 
 var UnitHandler unitHandler
 
-func InitializeUnitHandlers(fs app.UnitService) {
-	UnitHandler = unitHandler{unitService: fs}
+func InitializeUnitHandlers(us app.UnitService) {
+	UnitHandler = unitHandler{unitService: us}
 }
 
 // Show Unit godoc
@@ -30,7 +30,7 @@ func InitializeUnitHandlers(fs app.UnitService) {
 // // @Failure 400,404 {object} httputil.HTTPError
 // // @Failure 500 {object} httputil.HTTPError
 // // @Failure default {object} httputil.DefaultError
-// @Router /static/units/{id} [get]
+// @Router /units/{id} [get]
 func (h unitHandler) UnitByID(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -57,7 +57,7 @@ func (h unitHandler) UnitByID(c *gin.Context) {
 // // @Failure 400,404 {object} httputil.HTTPError
 // // @Failure 500 {object} httputil.HTTPError
 // // @Failure default {object} httputil.DefaultError
-// @Router /static/units [get]
+// @Router /units [get]
 func (h unitHandler) AllUnits(c *gin.Context) {
 	units, err := h.unitService.ListAllUnits(c.Request.Context())
 	if err != nil {
@@ -66,4 +66,34 @@ func (h unitHandler) AllUnits(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, units)
+}
+
+// Create Unit godoc
+// @Summary Create Unit (Administrative)
+// @Description responds with the newly created unit
+// @Accept json
+// @Produce json
+// @Param unit body app.Unit true "new unit"
+// @Success 200 {object} app.Unit "newly created unit"
+// // @Header 200 {string} Token "qwerty"
+// // @Failure 400,404 {object} httputil.HTTPError
+// // @Failure 500 {object} httputil.HTTPError
+// // @Failure default {object} httputil.DefaultError
+// @Router /units [post]
+func (h unitHandler) CreateUnit(c *gin.Context) {
+	var newUnit app.Unit
+	err := c.ShouldBind(&newUnit)
+
+	if err != nil {
+		_ = c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid create unit request: %v", newUnit))
+		return
+	}
+
+	createdUnit, err := h.unitService.CreateUnit(c.Request.Context(), newUnit)
+	if err != nil {
+		_ = c.AbortWithError(http.StatusNotFound, fmt.Errorf("failed to create unit: %s", err))
+		return
+	}
+
+	c.JSON(http.StatusCreated, createdUnit)
 }

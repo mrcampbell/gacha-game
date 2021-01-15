@@ -10,7 +10,10 @@ func RegisterHandlers(r *gin.Engine) {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/ping", handlers.Ping)
-		v1.GET("/static/units", handlers.UnitHandler.AllUnits)
-		v1.GET("/static/units/:id", handlers.UnitHandler.UnitByID)
+		v1.GET("/units", handlers.UnitHandler.AllUnits)
+		v1.GET("/units/:id", handlers.UnitHandler.UnitByID)
+		v1.POST("/units", handlers.UnitHandler.CreateUnit)
+
+		v1.GET("/fighters/:id", handlers.FighterHandler.FighterByID)
 	}
 }

@@ -24,12 +24,13 @@ func main() {
 	unitMoveService := inmemory.NewUnitMoveService(moveService)
 	fighterService := inmemory.NewFighterService(unitService, unitMoveService)
 
-	userID := "mikes id"
+	userID := "mike"
 
 	fighter, err := fighterService.CreateFighter(ctx, userID, "1", 5)
 	pretty.Println(fighter, err)
 
 	handlers.InitializeUnitHandlers(unitService)
+	handlers.InitializeFighterHandler(fighterService)
 
 	r := gin.Default()
 	http.RegisterHandlers(r)

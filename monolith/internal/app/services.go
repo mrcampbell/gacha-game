@@ -5,6 +5,7 @@ import "context"
 type UnitService interface {
 	UnitByID(ctx context.Context, id string) (Unit, error)
 	ListAllUnits(ctx context.Context) ([]Unit, error)
+	CreateUnit(ctx context.Context, unit Unit) (Unit, error)
 }
 
 type MoveService interface {

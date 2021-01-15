@@ -2,7 +2,6 @@ package inmemory
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/mrcampbell/gacha-game/monolith/internal/util"
@@ -31,17 +30,26 @@ func (fs FighterService) CreateFighter(ctx context.Context, userID, unitID strin
 		return app.Fighter{}, fmt.Errorf("failed to get unit by id | %s", err.Error())
 	}
 
-	moves, err := fs.unitMoveService.ListUnitMovesAtLevelForUnit(ctx, unitID, level)
-	if err != nil {
-		return app.Fighter{}, fmt.Errorf("failed to get moves for unit by id | %s", err.Error())
-	}
-
 	fighter := app.Fighter{Level: level, UserID: userID, BaseUnit: unit, UnitID: unitID}
 
 	fighter.CurrentStats = fighter.CalculateCurrentStats()
 
 	fighter.ID = util.GenerateID()
 	fs.fighters[fighter.ID] = fighter
+
+	return fighter, nil
+}
+
+func (fs FighterService) FighterByID(ctx context.Context, userID, fighterID string) (app.Fighter, error) {
+	fighter, ok := fs.fighters[fighterID]
+	if !ok || fighter.UserID != userID { // userID is a simple level of security
+		return app.Fighter{}, fmt.Errorf("fighter with id [%s] not found", fighterID)
+	}
+
+	moves, err := fs.unitMoveService.ListUnitMovesAtLevelForUnit(ctx, fighter.UnitID, fighter.Level)
+	if err != nil {
+		return app.Fighter{}, fmt.Errorf("failed to get moves for unit by id | %s", err.Error())
+	}
 
 	// we assign moves afterwards because they are their own unique, independent object.  We're only concerned with storing
 	// details specific to the fighter, and since our fighter gains the same exact moves as they level up, it will always
@@ -53,12 +61,15 @@ func (fs FighterService) CreateFighter(ctx context.Context, userID, unitID strin
 	return fighter, nil
 }
 
-func (fs FighterService) FighterByID(ctx context.Context, userID, fighterID string) (app.Fighter, error) {
-	return app.Fighter{}, errors.New("unimplemented")
-}
-
 func (fs FighterService) FightersByUserID(ctx context.Context, userID string) ([]app.Fighter, error) {
-	return nil, errors.New("unimplemented")
+	fighters := make([]app.Fighter, 0)
+	for _, fighter := range fs.fighters { // not efficient, but we're still small, so it's okay
+		if fighter.UserID == userID {
+			fighters = append(fighters, fighter)
+		}
+	}
+
+	return fighters, nil
 }
 
 func (fs *FighterService) initialize() {

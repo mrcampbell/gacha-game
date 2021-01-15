@@ -163,9 +163,8 @@ type Fighter struct {
 }
 
 func (f Fighter) CalculateCurrentStats() StatGroup {
-
 	calcStat := func(level, baseStat int32) int32 {
-		return level * baseStat / 4 // this is arbitrary
+		return level * baseStat / 4 // this is arbitrary.  We'll work this out later
 	}
 
 	sg := StatGroup{

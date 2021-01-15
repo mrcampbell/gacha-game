@@ -3,6 +3,7 @@ package inmemory
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/mrcampbell/gacha-game/monolith/internal/app"
 )
@@ -121,10 +122,31 @@ func (us UnitService) UnitByID(ctx context.Context, id string) (app.Unit, error)
 
 func (us UnitService) ListAllUnits(ctx context.Context) ([]app.Unit, error) {
 	units := []app.Unit{}
-	for _, unit := range us.units {
+	for key, unit := range us.units {
+		unit.ID = key
 		units = append(units, unit)
 	}
 	return units, nil
+}
+
+func (us UnitService) CreateUnit(ctx context.Context, unit app.Unit) (app.Unit, error) {
+	// https://codereview.stackexchange.com/a/178497
+	var maxID string
+	for maxID = range us.units { // not really safe, but again - we're small, so it shouldn't cause problems
+		break
+	}
+
+	maxIDValue, err := strconv.Atoi(maxID)
+	if err != nil {
+		return app.Unit{}, fmt.Errorf("the max id in the unit's map is not an integer: [%s]", maxID)
+	}
+
+	newID := fmt.Sprintf("%d", maxIDValue+1)
+	us.units[newID] = unit
+
+	unit.ID = newID
+
+	return unit, nil
 }
 
 // this is a private function to populate the "in-memory database".
