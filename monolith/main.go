@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -12,8 +11,6 @@ import (
 )
 
 func main() {
-	ctx := context.Background()
-
 	// none of these are thread safe.
 	moveService := inmemory.NewMoveService()
 	unitService, err := inmemory.NewUnitService()
@@ -24,10 +21,7 @@ func main() {
 	unitMoveService := inmemory.NewUnitMoveService(moveService)
 	fighterService := inmemory.NewFighterService(unitService, unitMoveService)
 
-	userID := "mike"
-
-	fighter, err := fighterService.CreateFighter(ctx, userID, "1", 5)
-	pretty.Println(fighter, err)
+	pretty.Println(fighterService)
 
 	handlers.InitializeUnitHandlers(unitService)
 	handlers.InitializeFighterHandler(fighterService)

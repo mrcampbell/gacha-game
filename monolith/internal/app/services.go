@@ -4,7 +4,7 @@ import "context"
 
 type UnitService interface {
 	UnitByID(ctx context.Context, id string) (Unit, error)
-	ListAllUnits(ctx context.Context) ([]Unit, error)
+	AllUnits(ctx context.Context) ([]Unit, error)
 	CreateUnit(ctx context.Context, unit Unit) (Unit, error)
 }
 
@@ -13,8 +13,8 @@ type MoveService interface {
 }
 
 type UnitMoveService interface {
-	ListUnitMovesForUnit(ctx context.Context, unitID string) ([]Move, error)
-	ListUnitMovesAtLevelForUnit(ctx context.Context, unitID string, level int32) ([]Move, error)
+	UnitMovesByUnitID(ctx context.Context, unitID string) ([]Move, error)
+	LearnedUnitMovesByUnitID(ctx context.Context, unitID string, level int32) ([]Move, error)
 }
 
 type FighterService interface {

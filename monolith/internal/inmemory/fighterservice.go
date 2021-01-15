@@ -12,8 +12,9 @@ import (
 // ensure the interface is implemented correctly
 var _ app.FighterService = &FighterService{}
 
+var fighters map[string]app.Fighter
+
 type FighterService struct {
-	fighters        map[string]app.Fighter
 	unitService     app.UnitService
 	unitMoveService app.UnitMoveService
 }
@@ -35,18 +36,40 @@ func (fs FighterService) CreateFighter(ctx context.Context, userID, unitID strin
 	fighter.CurrentStats = fighter.CalculateCurrentStats()
 
 	fighter.ID = util.GenerateID()
-	fs.fighters[fighter.ID] = fighter
+
+	fighters[fighter.ID] = fighter
 
 	return fighter, nil
 }
 
 func (fs FighterService) FighterByID(ctx context.Context, userID, fighterID string) (app.Fighter, error) {
-	fighter, ok := fs.fighters[fighterID]
+	fighter, ok := fighters[fighterID]
 	if !ok || fighter.UserID != userID { // userID is a simple level of security
 		return app.Fighter{}, fmt.Errorf("fighter with id [%s] not found", fighterID)
 	}
 
-	moves, err := fs.unitMoveService.ListUnitMovesAtLevelForUnit(ctx, fighter.UnitID, fighter.Level)
+	hydratedFighter, err := fs.hydrateFighter(ctx, fighter)
+	if err != nil {
+		return app.Fighter{}, fmt.Errorf("failed to hydrate fighter | %s", err)
+	}
+
+	return hydratedFighter, nil
+}
+
+func (fs FighterService) FightersByUserID(ctx context.Context, userID string) ([]app.Fighter, error) {
+	fighterList := make([]app.Fighter, 0)
+	for _, fighter := range fighters { // not efficient, but we're still small, so it's okay
+		fmt.Println(fighter)
+		if fighter.UserID == userID {
+			fighterList = append(fighterList, fighter)
+		}
+	}
+
+	return fighterList, nil
+}
+
+func (fs FighterService) hydrateFighter(ctx context.Context, fighter app.Fighter) (app.Fighter, error) {
+	moves, err := fs.unitMoveService.LearnedUnitMovesByUnitID(ctx, fighter.UnitID, fighter.Level)
 	if err != nil {
 		return app.Fighter{}, fmt.Errorf("failed to get moves for unit by id | %s", err.Error())
 	}
@@ -61,17 +84,10 @@ func (fs FighterService) FighterByID(ctx context.Context, userID, fighterID stri
 	return fighter, nil
 }
 
-func (fs FighterService) FightersByUserID(ctx context.Context, userID string) ([]app.Fighter, error) {
-	fighters := make([]app.Fighter, 0)
-	for _, fighter := range fs.fighters { // not efficient, but we're still small, so it's okay
-		if fighter.UserID == userID {
-			fighters = append(fighters, fighter)
-		}
-	}
-
-	return fighters, nil
-}
-
 func (fs *FighterService) initialize() {
-	fs.fighters = make(map[string]app.Fighter)
+	fighters = make(map[string]app.Fighter)
+	_, err := fs.CreateFighter(context.Background(), "mike", "1", 5) // create a fighter for testing
+	if err != nil {
+		panic(err)
+	}
 }

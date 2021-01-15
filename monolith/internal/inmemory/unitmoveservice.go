@@ -21,7 +21,7 @@ func NewUnitMoveService(moveService app.MoveService) UnitMoveService {
 	return ums
 }
 
-func (ums UnitMoveService) ListUnitMovesForUnit(ctx context.Context, unitID string) ([]app.Move, error) {
+func (ums UnitMoveService) UnitMovesByUnitID(ctx context.Context, unitID string) ([]app.Move, error) {
 	moves := make([]app.Move, 0)
 	for _, unitMove := range ums.unitMoves {
 		if unitMove.UnitID == unitID {
@@ -40,7 +40,7 @@ func (ums UnitMoveService) ListUnitMovesForUnit(ctx context.Context, unitID stri
 	return moves, nil
 }
 
-func (ums UnitMoveService) ListUnitMovesAtLevelForUnit(ctx context.Context, unitID string, level int32) ([]app.Move, error) {
+func (ums UnitMoveService) LearnedUnitMovesByUnitID(ctx context.Context, unitID string, level int32) ([]app.Move, error) {
 	moves := make([]app.Move, 0)
 	for _, unitMove := range ums.unitMoves {
 		if unitMove.UnitID == unitID && unitMove.LevelLearnedAt <= level {

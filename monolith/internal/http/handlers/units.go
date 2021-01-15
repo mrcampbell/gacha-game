@@ -59,7 +59,7 @@ func (h unitHandler) UnitByID(c *gin.Context) {
 // // @Failure default {object} httputil.DefaultError
 // @Router /units [get]
 func (h unitHandler) AllUnits(c *gin.Context) {
-	units, err := h.unitService.ListAllUnits(c.Request.Context())
+	units, err := h.unitService.AllUnits(c.Request.Context())
 	if err != nil {
 		_ = c.Error(fmt.Errorf("error listing units"))
 		return

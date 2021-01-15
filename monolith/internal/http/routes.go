@@ -15,5 +15,8 @@ func RegisterHandlers(r *gin.Engine) {
 		v1.POST("/units", handlers.UnitHandler.CreateUnit)
 
 		v1.GET("/fighters/:id", handlers.FighterHandler.FighterByID)
+
+		// my
+		v1.GET("/my/fighters", handlers.FighterHandler.FightersByUserID)
 	}
 }

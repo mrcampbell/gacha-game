@@ -48,26 +48,26 @@ func (h fighterHandler) FighterByID(c *gin.Context) {
 	c.JSON(http.StatusOK, fighter)
 }
 
-// // List Units godoc
-// // @Summary Gets Unit by ID (Public/Static).
-// // @Description responds with all available single unit
-// // @Accept  json
-// // @Produce  json
-// // @Success 200 {object} []app.Unit
-// // // @Header 200 {string} Token "qwerty"
-// // // @Failure 400,404 {object} httputil.HTTPError
-// // // @Failure 500 {object} httputil.HTTPError
-// // // @Failure default {object} httputil.DefaultError
-// // @Router /units [get]
-// func (h fighterHandler) FightersByUserID(c *gin.Context) {
-// 	units, err := h.unitService.ListAllUnits(c.Request.Context())
-// 	if err != nil {
-// 		_ = c.Error(fmt.Errorf("error listing units"))
-// 		return
-// 	}
+// List Fighters for User godoc
+// @Summary Gets Fighters by UserID
+// @Description responds with all the users fighters
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} []app.Fighter
+// // @Header 200 {string} Token "qwerty"
+// // @Failure 400,404 {object} httputil.HTTPError
+// // @Failure 500 {object} httputil.HTTPError
+// // @Failure default {object} httputil.DefaultError
+// @Router /my/fighters [get]
+func (h fighterHandler) FightersByUserID(c *gin.Context) {
+	units, err := h.fighterService.FightersByUserID(c.Request.Context(), "mike")
+	if err != nil {
+		_ = c.Error(fmt.Errorf("error listing fighters"))
+		return
+	}
 
-// 	c.JSON(http.StatusOK, units)
-// }
+	c.JSON(http.StatusOK, units)
+}
 
 // // Create Unit godoc
 // // @Summary Create Unit (Administrative)

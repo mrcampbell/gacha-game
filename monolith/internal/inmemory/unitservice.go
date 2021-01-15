@@ -3,16 +3,17 @@ package inmemory
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/mrcampbell/gacha-game/monolith/internal/app"
+	"github.com/mrcampbell/gacha-game/monolith/internal/util"
 )
 
 // ensure the interface is implemented correctly
 var _ app.UnitService = &UnitService{}
 
+var units map[string]app.Unit
+
 type UnitService struct {
-	units map[string]app.Unit
 }
 
 func NewUnitService() (UnitService, error) {
@@ -108,7 +109,7 @@ var classStatMap = map[app.UnitType]app.StatGroup{
 }
 
 func (us UnitService) UnitByID(ctx context.Context, id string) (app.Unit, error) {
-	unit, ok := us.units[id]
+	unit, ok := units[id]
 	if !ok {
 		return app.Unit{}, fmt.Errorf("no unit with id [%s]", id)
 	}
@@ -120,31 +121,18 @@ func (us UnitService) UnitByID(ctx context.Context, id string) (app.Unit, error)
 	return unit, nil
 }
 
-func (us UnitService) ListAllUnits(ctx context.Context) ([]app.Unit, error) {
-	units := []app.Unit{}
-	for key, unit := range us.units {
-		unit.ID = key
-		units = append(units, unit)
+func (us UnitService) AllUnits(ctx context.Context) ([]app.Unit, error) {
+	unitList := []app.Unit{}
+	for _, unit := range units {
+		unitList = append(unitList, unit)
 	}
-	return units, nil
+	return unitList, nil
 }
 
 func (us UnitService) CreateUnit(ctx context.Context, unit app.Unit) (app.Unit, error) {
-	// https://codereview.stackexchange.com/a/178497
-	var maxID string
-	for maxID = range us.units { // not really safe, but again - we're small, so it shouldn't cause problems
-		break
-	}
+	unit.ID = util.GenerateID()
 
-	maxIDValue, err := strconv.Atoi(maxID)
-	if err != nil {
-		return app.Unit{}, fmt.Errorf("the max id in the unit's map is not an integer: [%s]", maxID)
-	}
-
-	newID := fmt.Sprintf("%d", maxIDValue+1)
-	us.units[newID] = unit
-
-	unit.ID = newID
+	units[unit.ID] = unit
 
 	return unit, nil
 }
@@ -152,33 +140,33 @@ func (us UnitService) CreateUnit(ctx context.Context, unit app.Unit) (app.Unit, 
 // this is a private function to populate the "in-memory database".
 // Not typical, more proof of concept.
 func (us *UnitService) initialize() error {
-	us.units = make(map[string]app.Unit)
+	units = make(map[string]app.Unit)
 
-	us.units["1"] = app.Unit{Element: app.ElementFire, Name: "Fire Tank", UnitType: app.UnitTypeTank}
-	us.units["2"] = app.Unit{Element: app.ElementFire, Name: "Fire Healer", UnitType: app.UnitTypeHealer}
-	us.units["3"] = app.Unit{Element: app.ElementFire, Name: "Fire Support", UnitType: app.UnitTypeSupport}
-	us.units["4"] = app.Unit{Element: app.ElementFire, Name: "Fire Attacker", UnitType: app.UnitTypeAttacker}
-	us.units["5"] = app.Unit{Element: app.ElementWater, Name: "Water Tank", UnitType: app.UnitTypeTank}
-	us.units["6"] = app.Unit{Element: app.ElementWater, Name: "Water Healer", UnitType: app.UnitTypeHealer}
-	us.units["7"] = app.Unit{Element: app.ElementWater, Name: "Water Support", UnitType: app.UnitTypeSupport}
-	us.units["8"] = app.Unit{Element: app.ElementWater, Name: "Water Attacker", UnitType: app.UnitTypeAttacker}
-	us.units["9"] = app.Unit{Element: app.ElementGrass, Name: "Water Tank", UnitType: app.UnitTypeTank}
-	us.units["10"] = app.Unit{Element: app.ElementGrass, Name: "Grass Healer", UnitType: app.UnitTypeHealer}
-	us.units["11"] = app.Unit{Element: app.ElementGrass, Name: "Grass Support", UnitType: app.UnitTypeSupport}
-	us.units["12"] = app.Unit{Element: app.ElementGrass, Name: "Grass Attacker", UnitType: app.UnitTypeAttacker}
-	us.units["13"] = app.Unit{Element: app.ElementNormal, Name: "Normal Tank", UnitType: app.UnitTypeTank}
-	us.units["14"] = app.Unit{Element: app.ElementNormal, Name: "Normal Healer", UnitType: app.UnitTypeHealer}
-	us.units["15"] = app.Unit{Element: app.ElementNormal, Name: "Normal Support", UnitType: app.UnitTypeSupport}
-	us.units["16"] = app.Unit{Element: app.ElementNormal, Name: "Normal Attacker", UnitType: app.UnitTypeAttacker}
+	units["1"] = app.Unit{Element: app.ElementFire, Name: "Fire Tank", UnitType: app.UnitTypeTank}
+	units["2"] = app.Unit{Element: app.ElementFire, Name: "Fire Healer", UnitType: app.UnitTypeHealer}
+	units["3"] = app.Unit{Element: app.ElementFire, Name: "Fire Support", UnitType: app.UnitTypeSupport}
+	units["4"] = app.Unit{Element: app.ElementFire, Name: "Fire Attacker", UnitType: app.UnitTypeAttacker}
+	units["5"] = app.Unit{Element: app.ElementWater, Name: "Water Tank", UnitType: app.UnitTypeTank}
+	units["6"] = app.Unit{Element: app.ElementWater, Name: "Water Healer", UnitType: app.UnitTypeHealer}
+	units["7"] = app.Unit{Element: app.ElementWater, Name: "Water Support", UnitType: app.UnitTypeSupport}
+	units["8"] = app.Unit{Element: app.ElementWater, Name: "Water Attacker", UnitType: app.UnitTypeAttacker}
+	units["9"] = app.Unit{Element: app.ElementGrass, Name: "Water Tank", UnitType: app.UnitTypeTank}
+	units["10"] = app.Unit{Element: app.ElementGrass, Name: "Grass Healer", UnitType: app.UnitTypeHealer}
+	units["11"] = app.Unit{Element: app.ElementGrass, Name: "Grass Support", UnitType: app.UnitTypeSupport}
+	units["12"] = app.Unit{Element: app.ElementGrass, Name: "Grass Attacker", UnitType: app.UnitTypeAttacker}
+	units["13"] = app.Unit{Element: app.ElementNormal, Name: "Normal Tank", UnitType: app.UnitTypeTank}
+	units["14"] = app.Unit{Element: app.ElementNormal, Name: "Normal Healer", UnitType: app.UnitTypeHealer}
+	units["15"] = app.Unit{Element: app.ElementNormal, Name: "Normal Support", UnitType: app.UnitTypeSupport}
+	units["16"] = app.Unit{Element: app.ElementNormal, Name: "Normal Attacker", UnitType: app.UnitTypeAttacker}
 
-	for id, unit := range us.units {
+	for id, unit := range units {
 		sg, err := calculateStatsForUnit(unit.Element, unit.UnitType)
 		if err != nil {
 			return fmt.Errorf("failed to generate stats for unit with id [%s] | %s", id, err)
 		}
 
 		unit.Stats = sg
-		us.units[id] = unit
+		units[id] = unit
 	}
 
 	return nil
