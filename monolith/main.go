@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kr/pretty"
 	"github.com/mrcampbell/gacha-game/monolith/internal/http"
 	"github.com/mrcampbell/gacha-game/monolith/internal/http/handlers"
 	"github.com/mrcampbell/gacha-game/monolith/internal/inmemory"
@@ -20,8 +19,6 @@ func main() {
 
 	unitMoveService := inmemory.NewUnitMoveService(moveService)
 	fighterService := inmemory.NewFighterService(unitService, unitMoveService)
-
-	pretty.Println(fighterService)
 
 	handlers.InitializeUnitHandlers(unitService)
 	handlers.InitializeFighterHandler(fighterService)

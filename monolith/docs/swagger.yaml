@@ -1,5 +1,46 @@
 basePath: /api/v1
 definitions:
+  app.Fighter:
+    properties:
+      base_unit:
+        $ref: '#/definitions/app.Unit'
+      id:
+        type: string
+      moves:
+        items:
+          $ref: '#/definitions/app.Move'
+        type: array
+      stats:
+        $ref: '#/definitions/app.StatGroup'
+        description: calculated at level up
+      string:
+        type: integer
+      unit_id:
+        description: for hydration
+        type: string
+      user_id:
+        type: string
+    type: object
+  app.Move:
+    properties:
+      description:
+        type: string
+      element:
+        type: integer
+      id:
+        type: string
+      metas:
+        description: this is tricky, more a demo than anything
+        items:
+          $ref: '#/definitions/app.MoveMeta'
+        type: array
+      name:
+        type: string
+      rest_duration:
+        type: integer
+    type: object
+  app.MoveMeta:
+    type: object
   app.StatGroup:
     properties:
       attack:
@@ -37,6 +78,39 @@ info:
   title: 'Gacha Game: Monolith'
   version: "1.0"
 paths:
+  /fighters/{id}:
+    get:
+      consumes:
+      - application/json
+      description: responds with single fighter
+      parameters:
+      - description: get fighter by id
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Fighter'
+      summary: Gets Fighter by ID (Public/Static).
+  /my/fighters:
+    get:
+      consumes:
+      - application/json
+      description: responds with all the users fighters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/app.Fighter'
+            type: array
+      summary: Gets Fighters by UserID
   /ping:
     get:
       consumes:
@@ -50,7 +124,7 @@ paths:
           schema:
             $ref: '#/definitions/handlers.pong'
       summary: Ensure the API is working/listening
-  /static/units:
+  /units:
     get:
       consumes:
       - application/json
@@ -65,7 +139,26 @@ paths:
               $ref: '#/definitions/app.Unit'
             type: array
       summary: Gets Unit by ID (Public/Static).
-  /static/units/{id}:
+    post:
+      consumes:
+      - application/json
+      description: responds with the newly created unit
+      parameters:
+      - description: new unit
+        in: body
+        name: unit
+        required: true
+        schema:
+          $ref: '#/definitions/app.Unit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: newly created unit
+          schema:
+            $ref: '#/definitions/app.Unit'
+      summary: Create Unit (Administrative)
+  /units/{id}:
     get:
       consumes:
       - application/json

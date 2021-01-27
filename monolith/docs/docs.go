@@ -24,6 +24,57 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/fighters/{id}": {
+            "get": {
+                "description": "responds with single fighter",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets Fighter by ID (Public/Static).",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "get fighter by id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Fighter"
+                        }
+                    }
+                }
+            }
+        },
+        "/my/fighters": {
+            "get": {
+                "description": "responds with all the users fighters",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Gets Fighters by UserID",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/app.Fighter"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/ping": {
             "get": {
                 "description": "responds with ` + "`" + `pong` + "`" + `",
@@ -44,7 +95,7 @@ var doc = `{
                 }
             }
         },
-        "/static/units": {
+        "/units": {
             "get": {
                 "description": "responds with all available single unit",
                 "consumes": [
@@ -65,9 +116,38 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "description": "responds with the newly created unit",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create Unit (Administrative)",
+                "parameters": [
+                    {
+                        "description": "new unit",
+                        "name": "unit",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/app.Unit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "newly created unit",
+                        "schema": {
+                            "$ref": "#/definitions/app.Unit"
+                        }
+                    }
+                }
             }
         },
-        "/static/units/{id}": {
+        "/units/{id}": {
             "get": {
                 "description": "responds with single unit",
                 "consumes": [
@@ -97,6 +177,67 @@ var doc = `{
         }
     },
     "definitions": {
+        "app.Fighter": {
+            "type": "object",
+            "properties": {
+                "base_unit": {
+                    "$ref": "#/definitions/app.Unit"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "moves": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.Move"
+                    }
+                },
+                "stats": {
+                    "description": "calculated at level up",
+                    "$ref": "#/definitions/app.StatGroup"
+                },
+                "string": {
+                    "type": "integer"
+                },
+                "unit_id": {
+                    "description": "for hydration",
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "app.Move": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "element": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "metas": {
+                    "description": "this is tricky, more a demo than anything",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/app.MoveMeta"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "rest_duration": {
+                    "type": "integer"
+                }
+            }
+        },
+        "app.MoveMeta": {
+            "type": "object"
+        },
         "app.StatGroup": {
             "type": "object",
             "properties": {

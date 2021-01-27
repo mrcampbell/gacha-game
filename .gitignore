@@ -1,3 +1,4 @@
 fighter-service/target/*
 **/.DS_Store
 monolith/server
+**/node_modules
